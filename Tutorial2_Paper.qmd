@@ -1,9 +1,40 @@
 ---
-title: "Tutorial2"
+title: "Tutorial 2: Public Library Computer Work Station Usage"
 format: pdf
 editor: visual
 author: Thomas Fox
+date: January 16, 2024
 ---
+
+In recent years, municipal public libraries have increaslingly become spaces that work to facilitate community building and access to technology.
+
+The major political parties in Canada are the Liberal Party and the Conservative Party. The Bloc Québécois, the New Democratic Party (NDP), and the Green Party are the less popular political parties in Canada. The country is also home to numerous small parties and independent candidates. In this tutorial, I analyzed
+Elections Canada Data to determine how many seats were secured by each party during the 2021 Canadian Federal Election.				
+
+I began by sketching the required data that would be needed and a visual
+representation of the graph that would be produced after analyzing the data (see Figure 1). I
+then simulated the required data set by randomly assigning a political party for each of the 338
+seats in the Canadian Parliament. After this, I gathered the Elections Canada data from the
+Telling Stories with Data website (Alexander, 2024).
+
+The next step was processing and cleaning the data set to align with my use case by
+using the statistical programming language R (R Core Team, 2023). I did so with the help of the
+tutorial specification and my completed Australian Election example from Chapter Two in
+Telling Stories with Data as a guide (Alexander, 2024). Throughout this process, I also used the R
+language packages, tidyverse (Wickham et al., 2019) and janitor (Firke, 2023) as specified in the
+tutorial guide. I then constructed a graph to represent the distribution of seats among the five
+Canadian political parties after the 2021 Canadian Federal Election (see Figure 2).
+
+I found that the Liberal Party held the most seats after the election at 162. They were
+followed by the Conservative Party who held 119 seats following the election. Of the minor
+Canadian Political parties, the Bloc Québécois held the most seats with 32 followed by the New
+Democrats with 25. I also found that the Green Party won only 2 seats during the election.
+
+The win by the Liberal party may have been the result of the COVID-19 era election.
+After two turbulent and uncertain years of the global pandemic, the Canadian public may have
+been unwilling to endorse a change in government. Calling the election during that time may
+have been a strategic move by the liberals if the decision was in alignment with polling data
+suggesting a liberal win at the time.
 
 ```{r}
 #| echo: false
@@ -27,7 +58,6 @@ library(dplyr)
 library(knitr)
 
 ```
-
 
 ```{r}
 #| echo: false
@@ -116,6 +146,3 @@ cleaned_toronto_library_comp_usage |>
   theme_minimal() + # Make the theme neater
   labs(x = "Party", y = "Avg Sessions Per Branch") # Make labels more meaningful
 ```
-
-
-
