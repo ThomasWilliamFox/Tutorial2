@@ -2,6 +2,7 @@
 title: "Tutorial2"
 format: pdf
 editor: visual
+author: Thomas Fox
 ---
 
 ```{r}
@@ -29,7 +30,14 @@ library(knitr)
 
 
 ```{r}
-# Acquire data from opendatatoronto according to "For Developers" instructions
+#| echo: false
+#| include: false
+#| warning: false
+#| message: false
+#| 
+#### Acquire Data ####
+# Acquires data from Open Data Toronto according to "For Developers" instructions
+
 # get package
 package <- show_package("c5e2fdc6-9190-4205-bc04-0c3ce265d005")
 package
@@ -44,6 +52,7 @@ datastore_resources <- filter(resources, tolower(format) %in% c('csv', 'geojson'
 toronto_library_comp_usage <- filter(datastore_resources, row_number()==1) %>% get_resource()
 toronto_library_comp_usage
 
+# write initial data set to .csv file  
 head(toronto_library_comp_usage)
 write_csv(
   x = toronto_library_comp_usage,
@@ -52,17 +61,23 @@ write_csv(
 ```
 
 ```{r}
-# Filter Data
+#| echo: false
+#| include: false
+#| warning: false
+#| message: false
 
-names(toronto_library_comp_usage)
+#### Clean Data ####
 
+# clean column names, select year and session columns, and change sessions from char to int. 
 cleaned_toronto_library_comp_usage <-
   clean_names(toronto_library_comp_usage) |>
   select(year, sessions) |>
   mutate (sessions = as.integer(sessions))
 
+# print head to confirm cleaning
 head(cleaned_toronto_library_comp_usage)
 
+# write cleaned data set to .csv file
 write_csv(
   x = cleaned_toronto_library_comp_usage,
   file = "cleaned_toronto_library_permits.csv"
@@ -70,6 +85,13 @@ write_csv(
 ```
 
 ```{r}
+#| echo: false
+#| include: false
+#| warning: false
+#| message: false
+
+#Summarize data by average sessions per branch by year 
+
 cleaned_toronto_library_comp_usage <-
   cleaned_toronto_library_comp_usage |>
     summarise(total_sessions = mean(sessions),
@@ -78,6 +100,16 @@ head(cleaned_toronto_library_comp_usage)
 ```
 
 ```{r}
+#| echo: false
+#| include: true
+#| warning: false
+#| message: false
+#| label: fig-uniquename
+#| fig-cap: Average number of yearly Toronto Public Library computer work station sessions per branch, based on data from 2018 - 2022 obtained from Open Data Toronto.
+
+#### Explore ####
+
+# build graph with x-axis as years and y-axis as average sessions per branch 
 cleaned_toronto_library_comp_usage |>
   ggplot(aes(x = year, y = total_sessions)) +
   geom_bar(stat = "identity") +
