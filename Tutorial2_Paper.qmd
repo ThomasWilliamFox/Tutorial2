@@ -23,7 +23,63 @@ library(janitor)
 library(lubridate)
 library(opendatatoronto)
 library(tidyverse)
+library(dplyr)
 library(knitr)
 
 ```
+
+
+
+```{r}
+# Acquire data from opendatatoronto according to "For Developers" instructions
+# get package
+package <- show_package("108c2bd1-6945-46f6-af92-02f5658ee7f7")
+package
+ 
+# get all resources for this package
+resources <- list_package_resources("108c2bd1-6945-46f6-af92-02f5658ee7f7")
+ 
+# identify datastore resources; by default, Toronto Open Data sets datastore resource format to CSV for non-geospatial and GeoJSON for geospatial resources
+datastore_resources <- filter(resources, tolower(format) %in% c('csv', 'geojson'))
+ 
+# load the first datastore resource as a sample
+data <- filter(datastore_resources, row_number()==1) %>% get_resource()
+data
+
+write_csv(
+  x = toronto_building_permits,
+  file = "toronto_building_permits.csv"
+)
+```
+
+```{r}
+# Filter Data
+
+names(toronto_building_permits)
+
+cleaned_toronto_building_permits <-
+  clean_names(toronto_building_permits) |>
+  select(issued_date)
+
+head(cleaned_toronto_bulding_permits)
+
+write_csv(
+  x = cleaned_toronto_building_permits,
+  file = "cleaned_toronto_building_permits.csv"
+)
+```
+
+```{r}
+cleaned_toronto_building_permits <-
+  cleaned_toronto_building_permits |>
+  separate(
+    col = issued_date,
+    into = c("Year", "Month", "Day"),
+    sep = "-"
+    ) |>
+    select(Year)
+
+head(cleaned_toronto_building_permits)
+```
+
 
