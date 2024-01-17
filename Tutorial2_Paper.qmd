@@ -4,37 +4,8 @@ format: pdf
 editor: visual
 author: Thomas Fox
 date: January 16, 2024
+bibliography: tutorial2references.bib
 ---
-
-In recent years, municipal public libraries have increaslingly become spaces that work to facilitate community building and access to technology.
-
-The major political parties in Canada are the Liberal Party and the Conservative Party. The Bloc Québécois, the New Democratic Party (NDP), and the Green Party are the less popular political parties in Canada. The country is also home to numerous small parties and independent candidates. In this tutorial, I analyzed
-Elections Canada Data to determine how many seats were secured by each party during the 2021 Canadian Federal Election.				
-
-I began by sketching the required data that would be needed and a visual
-representation of the graph that would be produced after analyzing the data (see Figure 1). I
-then simulated the required data set by randomly assigning a political party for each of the 338
-seats in the Canadian Parliament. After this, I gathered the Elections Canada data from the
-Telling Stories with Data website (Alexander, 2024).
-
-The next step was processing and cleaning the data set to align with my use case by
-using the statistical programming language R (R Core Team, 2023). I did so with the help of the
-tutorial specification and my completed Australian Election example from Chapter Two in
-Telling Stories with Data as a guide (Alexander, 2024). Throughout this process, I also used the R
-language packages, tidyverse (Wickham et al., 2019) and janitor (Firke, 2023) as specified in the
-tutorial guide. I then constructed a graph to represent the distribution of seats among the five
-Canadian political parties after the 2021 Canadian Federal Election (see Figure 2).
-
-I found that the Liberal Party held the most seats after the election at 162. They were
-followed by the Conservative Party who held 119 seats following the election. Of the minor
-Canadian Political parties, the Bloc Québécois held the most seats with 32 followed by the New
-Democrats with 25. I also found that the Green Party won only 2 seats during the election.
-
-The win by the Liberal party may have been the result of the COVID-19 era election.
-After two turbulent and uncertain years of the global pandemic, the Canadian public may have
-been unwilling to endorse a change in government. Calling the election during that time may
-have been a strategic move by the liberals if the decision was in alignment with polling data
-suggesting a liberal win at the time.
 
 ```{r}
 #| echo: false
@@ -59,13 +30,58 @@ library(knitr)
 
 ```
 
+
+# Share
+With the increased relevance of computing technology in our society, municipal public libraries have become spaces that work to facilitate community building through open access to computing technologies such as desktop computers, laptops, and the internet. The City of Toronto is home to one hundred public library branches, each of which offers free use of computer workstations for community members. In this tutorial, I analysed the Toronto Public Library's desktop workstation usage data collected between 2018 and 2022 to determine how many sessions have taken place each year, per branch, on average.
+
+I began planning by making a sketch of the required data that would be needed and a visual representation of the graph that would be produced after analyzing the data (see @fig-planning). I then simulated the required data set by randomly assigning a usage count with each for the one hundred branches for the 5 years of collected data by following the simulation examples in Telling Stories with Data [@tellingstories]. After this, I gathered the Library Workstation Usage data set from Open Data Toronto using the opendatatoronto package [@opendata].
+
+The next step was processing and cleaning the data set by using the statistical programming language R [@citeR]. I did this with the help of the examples from Chapter Two in Telling Stories with Data as a guide [@tellingstories]. Throughout this process, I also used the R language packages, knitr [@knitr], dplyr [@dplyr], tidyverse [@tidyverse], and janitor [@janitor] to help clean and display the data. I also used gitcreds [@gitcreds] and usethis [@usethis] to facilitate version control. Following the cleaning of my data, I built a graph to represent the average number of workstation sessions that took place at each branch over the given five years (see @fig-graph).
+
+I found that 2018 had the highest recorded computer work space usage with an average of 42,814 sessions per branch. Usage numbers in 2019 dropped slightly to an average of 39,875. The recorded usage in 2020 dropped significantly to an average of 10,208 sessions. The lowest usage was in 2021 with an average of 4790 sessions per branch. Numbers recovered moderately in 2022 with 14,841 sessions per branch. 
+
+The Toronto Public Library's computer work space usage dropped marginally between 2018 and 2019 but a further analysis of trends may conclude this is a normal variation. The drop in usage from 2019 to 2020 however may be reflective of COVID-19 public safety measures which caused many public spaces in Canada to restrict public access. This continued through 2021 where the data shows the lowest usage of public computers at the libraries. However, a recovery is evident in the 2022 numbers, possibly reflecting an easing of public safety measures. An analysis of the 2023 data, when made available, could give insight into how public usage has changed compared to pre-pandemic levels as most of Canada's pandemic related restrictions have been lifted.  
+```{r}
+#| echo: false
+#| include: false
+#| warning: false
+#| message: false
+
+#### Simulate ####
+
+set.seed(853)
+
+# simulates branches with 1 - 100, years with 2018-2022, and usage with random number from 100-20000 
+simulated_data <-
+  tibble(
+    branch =
+      rep(c(1:100), times = 5), 
+    
+    year = c(rep(x = "2018", times = 100),
+             rep(x = "2019", times = 100),
+             rep(x = "2020", times = 100),
+             rep(x = "2021", times = 100),
+             rep(x = "2022", times = 100)),
+    
+    usage = sample(
+      x = c(100:20000),
+      size = 500,
+      replace = TRUE)
+  )
+      
+
+head(simulated_data)
+simulated_data
+```
+
 ```{r}
 #| echo: false
 #| include: false
 #| warning: false
 #| message: false
 #| 
-#### Acquire Data ####
+#| #### Acquire Data ####
+
 # Acquires data from Open Data Toronto according to "For Developers" instructions
 
 # get package
@@ -110,7 +126,7 @@ head(cleaned_toronto_library_comp_usage)
 # write cleaned data set to .csv file
 write_csv(
   x = cleaned_toronto_library_comp_usage,
-  file = "cleaned_toronto_library_permits.csv"
+  file = "cleaned_toronto_library_comp_usage.csv"
 )
 ```
 
@@ -127,6 +143,27 @@ cleaned_toronto_library_comp_usage <-
     summarise(total_sessions = mean(sessions),
             .by = year) 
 head(cleaned_toronto_library_comp_usage)
+
+
+# write cleaned data set to .csv file
+write_csv(
+  x = cleaned_toronto_library_comp_usage,
+  file = "cleaned_toronto_library_comp_usage.csv"
+)
+```
+
+# Appendix
+
+```{r}
+#| echo: false
+#| include: true
+#| warning: false
+#| message: false
+#| label: fig-planning
+#| fig-cap: Planning sketch for data-set and visual output (graph)
+
+# displays planning image
+knitr::include_graphics("Tutorial2_Plan.jpg")
 ```
 
 ```{r}
@@ -134,15 +171,22 @@ head(cleaned_toronto_library_comp_usage)
 #| include: true
 #| warning: false
 #| message: false
-#| label: fig-uniquename
+#| label: fig-graph
 #| fig-cap: Average number of yearly Toronto Public Library computer work station sessions per branch, based on data from 2018 - 2022 obtained from Open Data Toronto.
 
-#### Explore ####
-
+# read cleaned .csv file
+cleaned_toronto_library_comp_usage <- 
+  read_csv(
+  file = "cleaned_toronto_library_comp_usage.csv",
+  show_col_types = FALSE
+)
 # build graph with x-axis as years and y-axis as average sessions per branch 
 cleaned_toronto_library_comp_usage |>
   ggplot(aes(x = year, y = total_sessions)) +
   geom_bar(stat = "identity") +
   theme_minimal() + # Make the theme neater
-  labs(x = "Party", y = "Avg Sessions Per Branch") # Make labels more meaningful
+  labs(x = "Year", y = "Avg Sessions Per Branch") # Make labels more meaningful
 ```
+\newpage
+# References
+
